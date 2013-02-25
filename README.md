@@ -34,12 +34,12 @@ More Information
 ================
 
 1. Upgrade Firmware via USB Booloder
-   TI's reference design or BLE Mini have a button connected to P1_2 is for triggering the USB upgrade mode. Press and hold the button, connect to a Windows PC, it will show a Mass Storage Drive, you can delete the old firmware and drag the new firmware to it.
+   TI's reference design or BLE Mini have a button connected to P1_2 pin is for triggering the USB upgrade mode. Press and hold the button, connect to a Windows PC, it will show a Mass Storage Drive, you can delete the old firmware and drag the new firmware to it.
 
-1. USB Boot Loader
+2. USB Boot Loader
    USB boot loader which is different from typical implementation, please refer to TI's document "Universal Boot Loader for SOC-8051 by USB-MSD Developer's Guide.pdf" and their sample project "HostTestApp" in their latest BLE SDK v1.3
 
-2. TI CC2540 Wiki (resources and other related information for the CC2540 SoC)
+3. TI CC2540 Wiki (resources and other related information for the CC2540 SoC)
    http://processors.wiki.ti.com/index.php/Category:BluetoothLE
 
 
