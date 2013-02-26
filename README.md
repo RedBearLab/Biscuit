@@ -27,6 +27,14 @@ Requirement
 5. Besides using the bootloader, if you want to program/debug the firmware with hardware (e.g. BLE Mini), you need a CC Debugger.
 
 
+How to Compile
+==============
+
+1. Make sure you know how to do before trying to compile and load the firmware because incorrect configuration can cause the prebuilt bootloader fails to function.
+
+2. A detailed guideline will be provided soon.
+
+
 More Information
 ================
 
