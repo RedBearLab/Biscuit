@@ -4374,7 +4374,7 @@
         <group>
           <name>Config</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_board_cfg.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\BLEMINI\hal_board_cfg.h</name>
           </file>
         </group>
         <group>
@@ -4438,7 +4438,7 @@
         <group>
           <name>Config</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540USB\hal_board_cfg.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\BLEMINI-USB\hal_board_cfg.h</name>
           </file>
         </group>
         <group>
@@ -4706,24 +4706,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\common\cc2540\OnBoard.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\UBL\soc_8051\usb_msd\app\ubl_app.c</name>
-      <excluded>
-        <configuration>CC2540 Biscuit UBL</configuration>
-        <configuration>CC2540 Biscuit CC Debugger</configuration>
-        <configuration>CC2540 Biscuit-USB CC Debugger</configuration>
-        <configuration>CC2540 Biscuit-USB UBL</configuration>
-      </excluded>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\UBL\soc_8051\usb_msd\app\ubl_app.h</name>
-      <excluded>
-        <configuration>CC2540 Biscuit UBL</configuration>
-        <configuration>CC2540 Biscuit CC Debugger</configuration>
-        <configuration>CC2540 Biscuit-USB CC Debugger</configuration>
-        <configuration>CC2540 Biscuit-USB UBL</configuration>
-      </excluded>
     </file>
   </group>
 </project>
