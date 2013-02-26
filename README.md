@@ -2,7 +2,7 @@
 Biscuit
 =======
 
-Biscuit is a open source firmware for TI CC2540 SoC.
+Biscuit is an open source firmware for TI CC2540 SoC.
 
 This source code is designed and tested on BLE Mini hardware platform but it can be run on other CC2540 platforms with some modifications.
 
@@ -20,24 +20,19 @@ Features
 Requirement
 ===========
 
-1. CC2540 hardware (e.g. BLE Mini)
-2. To compile the Biscuit source code, obtain a copy of IAR Embedded Workbench for 8051 version 8.10 or latest
-   Refer to TI CC254x development resources
-3. TI CC254x SDK version 1.2.1
-   Due to the UART issue, currently not support SDK 1.3, we are trying to fix it with TI support
-4. UBL version 1.3
-   We make use of the new USB bootloader so UBL 1.3 code is required
-5. If you want to program/debug the firmware with hardware (e.g. BLE Mini), you need a CC Debugger
+1. CC2540 hardware (e.g. BLE Mini).
+2. To compile the Biscuit source code, obtain a copy of IAR Embedded Workbench for 8051 version 8.10 or latest. Refer to TI CC254x development resources.
+3. TI CC254x SDK version 1.2.1 - Due to the UART issue, currently not support SDK 1.3, we are trying to fix it with TI support.
+4. UBL version 1.3 - We make use of the new USB bootloader so UBL 1.3 code is required.
+5. Besides using the bootloader, if you want to program/debug the firmware with hardware (e.g. BLE Mini), you need a CC Debugger.
 
 
 More Information
 ================
 
-1. Upgrade Firmware via USB Booloder
-   TI's reference design or BLE Mini have a button connected to P1_2 pin is for triggering the USB upgrade mode. Press and hold the button, connect to a Windows PC, it will show a Mass Storage Drive, you can delete the old firmware and drag the new firmware to it.
+1. Upgrade Firmware via USB Booloder - TI's reference design or BLE Mini have a button connected to P1_2 pin is for triggering the USB upgrade mode. Press and hold the button, connect to a Windows PC, it will show a Mass Storage Drive, you can delete the old firmware and drag the new firmware to it.
 
-2. USB Boot Loader
-   USB boot loader which is different from typical implementation, please refer to TI's document "Universal Boot Loader for SOC-8051 by USB-MSD Developer's Guide.pdf" and their sample project "HostTestApp" in their latest BLE SDK v1.3
+2. USB Boot Loader - USB boot loader which is different from typical implementation, please refer to TI's document "Universal Boot Loader for SOC-8051 by USB-MSD Developer's Guide.pdf" and their sample project "HostTestApp" in their latest BLE SDK v1.3
 
 3. TI CC2540 Wiki (resources and other related information for the CC2540 SoC)
    http://processors.wiki.ti.com/index.php/Category:BluetoothLE
