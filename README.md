@@ -2,7 +2,7 @@
 Biscuit
 =======
 
-Biscuit is an open source firmware for TI CC2540 SoC.
+Biscuit is an open source firmware for TI CC2540 SoC £¨designed for Bluetooh 4.0 Low Energy applications).
 
 This source code is designed and tested on BLE Mini hardware platform but it can be run on other CC2540 platforms with some modifications.
 
@@ -10,7 +10,7 @@ This source code is designed and tested on BLE Mini hardware platform but it can
 Features
 ========
 
-1. BLE periperal role running Biscuit service which allows BLE central role devices to connect with it (e.g. iOS Devices)
+1. BLE periperal role running Biscuit service (with 128-bit UUID) which allows BLE central role devices to connect with it (e.g. iOS Devices)
 2. UART driver which can redirect data to/from UART for connecting external devices (e.g. Arduino)
 3. I2C driver (Software implmentation), for controlling I2C components (e.g. EEPROM on BLE Mini)
 4. Firmware upgradable via USB port (support TI CC2540 UBL 1.3)
@@ -30,7 +30,7 @@ Requirement
 How to Compile
 ==============
 
-1. Make sure you know how to do before trying to compile and load the firmware because incorrect configuration can cause the prebuilt bootloader fails to function.
+1. Make sure you know how to do before trying to compile and load the firmware because incorrect configuration can cause the pre-loaded bootloader fails to function.
 
 2. A detailed guideline will be provided soon.
 
