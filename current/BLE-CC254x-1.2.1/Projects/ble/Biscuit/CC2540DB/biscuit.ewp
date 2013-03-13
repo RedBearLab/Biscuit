@@ -280,10 +280,10 @@
           <state>UUID_BASE_TAIL=0x1E,0x94,0x8D,0xF1,0x48,0x31,0x94,0xBA,0x75,0x4C,0x3E,0x50</state>
           <state>FEATURE_UBL_MSD</state>
           <state>OAD_KEEP_NV_PAGES</state>
-          <state>HAL_UART_ISR=1</state>
+          <state>HAL_UART_ISR=0</state>
           <state>HAL_UART_ISR_RX_MAX=250</state>
           <state>HAL_UART</state>
-          <state>HAL_UART_DMA=0</state>
+          <state>HAL_UART_DMA=1</state>
           <state>ADV_ALWAYS_ON</state>
           <state>MP_TEST</state>
           <state>BISCUIT</state>
