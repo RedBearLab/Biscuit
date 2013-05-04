@@ -32,8 +32,8 @@ How to Compile
 
 1. Make sure you know how to do before trying to compile and load the firmware because incorrect configuration can cause the pre-loaded bootloader fails to function.
 
-2. A detailed guideline will be provided soon.
-   -¡µSee current\readme.txt for details
+2. A detailed guideline will be provided soon.<br/>
+   -> See current\readme.txt for details
 
 More Information
 ================
