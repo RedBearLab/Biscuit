@@ -1,4 +1,10 @@
 
+How to compile
+==============
+
+This file shows the modifications required to change in order to be compiled.
+
+
 Files required for compiling:
  
 
@@ -11,9 +17,10 @@ To  : BLE-CC254x-1.2.1\Project\ble\common\cc2540\new_cc254x_f256_ubl_msd.xcl
 2. Copy UBL files from SDK 1.3 to SDK 1.2.1
 
 From: BLE-CC254x-1.3\Projects\ble\util\UBL
+To  : BLE-CC254x-1.2.1\Projects\ble\util\UBL
 
 
-3. Modify OnBoard.c
+3. Open the project using IAR and modify OnBoard.c
 
 File:
 C:\Texas Instruments\BLE-CC254x-1.2.1\Projects\ble\common\cc2540\OnBoard.c
@@ -57,7 +64,7 @@ void appForceBoot(void)
 #endif
 
 
-4. Modify hal_board_cfg.h
+4. Modify hal_board_cfg.h (*** Two files ***)
 
 File 1: BLE-CC254x-1.2.1\Components\hal\target\CC2540EB
 File 2: BLE-CC254x-1.2.1\Components\hal\target\CC2540USB
