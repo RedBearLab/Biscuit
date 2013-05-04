@@ -2,7 +2,7 @@
 Biscuit
 =======
 
-Biscuit is an open source firmware for TI CC2540 SoC £¨designed for Bluetooh 4.0 Low Energy applications).
+Biscuit is an open source firmware for TI CC2540 SoC (designed for Bluetooh 4.0 Low Energy applications).
 
 This source code is designed and tested on BLE Mini hardware platform but it can be run on other CC2540 platforms with some modifications.
 
@@ -33,7 +33,7 @@ How to Compile
 1. Make sure you know how to do before trying to compile and load the firmware because incorrect configuration can cause the pre-loaded bootloader fails to function.
 
 2. A detailed guideline will be provided soon.
-
+   -¡µSee current\readme.txt for details
 
 More Information
 ================

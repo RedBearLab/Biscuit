@@ -4374,7 +4374,7 @@
         <group>
           <name>Config</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\BLEMINI\hal_board_cfg.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_board_cfg.h</name>
           </file>
         </group>
         <group>
@@ -4438,7 +4438,7 @@
         <group>
           <name>Config</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\BLEMINI-USB\hal_board_cfg.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540USB\hal_board_cfg.h</name>
           </file>
         </group>
         <group>
