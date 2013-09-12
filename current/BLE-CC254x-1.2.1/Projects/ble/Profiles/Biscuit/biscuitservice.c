@@ -138,7 +138,7 @@ static uint8 simpleProfileChar2UserDesp[17] = "Characteristic 2\0";
 
 
 // Simple Profile Characteristic 3 Properties
-static uint8 simpleProfileChar3Props = GATT_PROP_WRITE;
+static uint8 simpleProfileChar3Props = GATT_PROP_WRITE_NO_RSP;
 
 // Characteristic 3 Value
 static uint8 rxDataChar = 0;
