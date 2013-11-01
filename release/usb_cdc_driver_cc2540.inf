@@ -1,0 +1,130 @@
+;
+; Texas Instruments CC2540 Low-power RF to USB Serial Port example setup file
+;
+; based on Windows USB CDC ACM Setup file
+; Copyright (c) 2000 Microsoft Corporation
+; Copyright (C) 2009 Texas Instruments Inc
+
+[Version]
+Signature="$Windows NT$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%PROVIDER%
+LayoutFile=layout.inf
+DriverVer=05/01/2009,1.1.0.0
+
+[Manufacturer]
+%MFGNAME%=DeviceList, NTx86, NTia64, NTamd64
+
+[DestinationDirs]
+DefaultDestDir=12
+
+[SourceDisksFiles]
+
+[SourceDisksNames]
+
+[DeviceList.NTx86]
+%DESCRIPTION%=DriverInstall, USB\VID_0451&PID_16AA
+
+[DeviceList.NTia64]
+%DESCRIPTION%=DriverInstall, USB\VID_0451&PID_16AA
+
+[DeviceList.NTamd64]
+%DESCRIPTION%=DriverInstall, USB\VID_0451&PID_16AA
+
+
+;------------------------------------------------------------------------------
+;  32-bit section for Windows 2000/2003/XP/Vista
+;------------------------------------------------------------------------------
+
+[DriverInstall.NTx86]
+include=mdmcpq.inf
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.NTx86.AddReg
+
+[DriverInstall.NTx86]
+include=mdmcpq.inf
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.NTx86.AddReg
+
+[DriverCopyFiles]
+usbser.sys,,,0x20
+
+[DriverInstall.NTx86.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[DriverInstall.NTx86.Services]
+AddService=usbser, 0x00000002, DriverService
+
+;------------------------------------------------------------------------------
+;  64-bit section for Intel Itanium based systems
+;------------------------------------------------------------------------------
+
+[DriverInstall.NTia64]
+include=mdmcpq.inf
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.NTia64.AddReg
+
+[DriverInstall.NTia64]
+include=mdmcpq.inf
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.NTia64.AddReg
+
+[DriverCopyFiles]
+usbser.sys,,,0x20
+
+[DriverInstall.NTia64.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[DriverInstall.NTia64.Services]
+AddService=usbser, 0x00000002, DriverService
+
+;------------------------------------------------------------------------------
+;  64-bit section for AMD64 and Intel EM64T based systems
+;------------------------------------------------------------------------------
+
+[DriverInstall.NTamd64]
+include=mdmcpq.inf
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.NTamd64.AddReg
+
+[DriverInstall.NTamd64]
+include=mdmcpq.inf
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.NTamd64.AddReg
+
+[DriverCopyFiles]
+usbser.sys,,,0x20
+
+[DriverInstall.NTamd64.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[DriverInstall.NTamd64.Services]
+AddService=usbser, 0x00000002, DriverService
+
+;------------------------------------------------------------------------------
+;
+;------------------------------------------------------------------------------
+
+[DriverService]
+DisplayName=%SERVICE%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\usbser.sys			;;%12% == "%WINDIR%\system32\"
+
+;------------------------------------------------------------------------------
+;  String Definitions
+;------------------------------------------------------------------------------
+
+[Strings]
+PROVIDER="Texas Instruments"
+MFGNAME="Texas Instruments"
+DESCRIPTION="TI CC2540 Low-Power RF to USB CDC Serial Port"
+SERVICE="TI CC2540 Low-Power RF to USB CDC Serial Port"
