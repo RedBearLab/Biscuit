@@ -17,6 +17,10 @@ Windows driver for Biscuit-USB, no driver require for Linux and Mac OSX.
 
 TI's Universal Boot Loader v1.3, you normally do not need this unless you want to reburn it with CC debugger.
 
+5. Biscuit-RGB
+
+Firmware to control a RGB LED (Flora NeoPixel) using a single I/O.
+
 Please Google the terms if you do not know.
 
 -RedBearLab
