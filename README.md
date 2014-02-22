@@ -1,4 +1,3 @@
-
 Biscuit
 =======
 
@@ -30,9 +29,10 @@ Requirement
 Examples
 ========
 
-There are two examples right now:<br/>
-1. Biscuit-UART, it relays TX/RX data to/from Central device via BLE and forwards data to UART, so that you can connect to external MCU for processing.
+1. Biscuit-UART, it relays TX/RX data to/from Central device via BLE and forwards data to UART, so that you can connect to external MCU for processing.<br/>
+<br/>
 2. Biscuit-RGB, it shows how to control a RGB LED (Flora NeoPixel) using 1-wire I/O, it connects to the TX pin of the BLE Mini.
+
 
 How to Compile
 ==============
