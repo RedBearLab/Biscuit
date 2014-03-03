@@ -2426,7 +2426,7 @@
           <state>xPLUS_BROADCASTER</state>
           <state>HAL_LCD=FALSE</state>
           <state>HAL_LED=TRUE</state>
-          <state>CC2540_MINIDK</state>
+          <state>xCC2540_MINIDK</state>
           <state>HAL_UART=TRUE</state>
           <state>HAL_UART_DMA=1</state>
           <state>HAL_UART_ISR=0</state>
