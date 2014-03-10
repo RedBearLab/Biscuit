@@ -313,9 +313,9 @@ void Biscuit_Init( uint8 task_id )
 
 #endif // #if defined( CC2540_MINIDK )
   
-  P1SEL &= 0xDF; // Configure P1_5(TX) as GPIO
-  P1DIR |= 0x20; // RGB IO Output
-  P1_5 = 0;
+  P1SEL &= 0xEF; // Configure P1_5(RX) as GPIO
+  P1DIR |= 0x10; // RGB IO Output
+  P1_4 = 0;
   
   // Register callback with TXRXService
   VOID TXRX_RegisterAppCBs( &biscuit_TXRXServiceCBs );
@@ -566,23 +566,23 @@ static void txrxServiceChangeCB( uint8 paramID )
           if (pix & mask)
           {
             // T1H 760ns
-            P1_5 = 1; P1_5 = 1; P1_5 = 1; P1_5 = 1; P1_5 = 1; P1_5 = 1; //P1_5 = 1;// P1_5 = 1;
+            P1_4 = 1; P1_4 = 1; P1_4 = 1; P1_4 = 1; P1_4 = 1; P1_4 = 1; //P1_4 = 1;// P1_4 = 1;
   
             // T1L 660ns
-            P1_5 = 0; P1_5 = 0; P1_5 = 0; //P1_5 = 0;// P1_5 = 0;
+            P1_4 = 0; P1_4 = 0; P1_4 = 0; //P1_4 = 0;// P1_4 = 0;
           }
           else
           {
             // T0H 380ns
-            P1_5 = 1; P1_5 = 1; //P1_5 = 1;// P1_5 = 1;
+            P1_4 = 1; P1_4 = 1; //P1_4 = 1;// P1_4 = 1;
       
             // T0L 840ns
-            P1_5 = 0; P1_5 = 0; P1_5 = 0; P1_5 = 0; P1_5 = 0; //P1_5 = 0;// P1_5 = 0;
+            P1_4 = 0; P1_4 = 0; P1_4 = 0; P1_4 = 0; P1_4 = 0; //P1_4 = 0;// P1_4 = 0;
           }
         }
       }
-      
-      P1_5 = 0;
+            
+      P1_4 = 0;
     }
   }
   else if (paramID == TXRX_RX_NOTI_ENABLED)
