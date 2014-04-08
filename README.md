@@ -15,6 +15,8 @@ Features
 4. Firmware upgradable via USB port (support TI CC2540 UBL 1.3)
 5. USB CDC which provides a virtual UART via USB port for connecting to an external device with the USB port (e.g. PC Windows/Linux or Mac OSX)
 
+Note: USB upgrade can be done on Windows PC only (XP and up to 8.0, but except 8.1), also not Mac OSX nor Linux.
+
 
 Requirement
 ===========
