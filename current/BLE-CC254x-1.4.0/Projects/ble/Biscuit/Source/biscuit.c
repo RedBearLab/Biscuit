@@ -1,26 +1,26 @@
 /*
- 
- Copyright (c) 2013 RedBearLab
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
- 
- */
+
+  Copyright (c) 2013 RedBearLab
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal 
+  in the Software without restriction, including without limitation the rights 
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+*/
 
 /*********************************************************************
  * INCLUDES
@@ -51,6 +51,10 @@
 #include "biscuit.h"
 #include "txrxservice.h"
 #include "npi.h"
+
+#include "i2c.h"
+#include "eeprom.h"
+#include "string.h"
 
 /*********************************************************************
  * MACROS
@@ -96,7 +100,7 @@
 #define INVALID_CONNHANDLE                    0xFFFF
 
 // Length of bd addr as a string
-#define B_ADDR_STR_LEN                        15
+#define B_ADDR_STR_LEN                        15        
 
 #define MAX_RX_LEN                            128
 #define SBP_RX_TIME_OUT                       5
@@ -108,7 +112,7 @@
 /*********************************************************************
  * GLOBAL VARIABLES
  */
-
+    
 /*********************************************************************
  * EXTERNAL VARIABLES
  */
@@ -131,20 +135,22 @@ static uint8 rxHead = 0, rxTail = 0;
 // GAP - SCAN RSP data (max size = 31 bytes)
 static uint8 scanRspData[] =
 {
-  // complete name 
-  10,   // length of this data
-  GAP_ADTYPE_LOCAL_NAME_COMPLETE,
-  'B','i','s','c','u','i','t',' ','2',
-
   // Tx power level
-  0x02,   // length of this data
-  GAP_ADTYPE_POWER_LEVEL,
-  0       // 0dBm
+  //0x02,   // length of this data
+  //GAP_ADTYPE_POWER_LEVEL,
+  //0,       // 0dBm
+  
+  // service UUID, to notify central devices what services are included
+  // in this peripheral
+  17,   // length of this data
+  GAP_ADTYPE_128BIT_COMPLETE,      // some of the UUID's, but not all
+  TXRX_SERV_UUID,
+    
 };
 
 // GAP - Advertisement data (max size = 31 bytes, though this is
 // best kept short to conserve power while advertisting)
-static uint8 advertData[] =
+static uint8 advertData[31] =
 {
   // Flags; this sets the device to use limited discoverable
   // mode (advertises for 30 seconds at a time) instead of general
@@ -152,16 +158,16 @@ static uint8 advertData[] =
   0x02,   // length of this data
   GAP_ADTYPE_FLAGS,
   DEFAULT_DISCOVERABLE_MODE | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
-
-  // service UUID, to notify central devices what services are included
-  // in this peripheral
-  17,   // length of this data
-  GAP_ADTYPE_128BIT_MORE,      // some of the UUID's, but not all
-  TXRX_SERV_UUID,
-};
+  
+  // complete name 
+  9,   // length of this data
+  GAP_ADTYPE_LOCAL_NAME_COMPLETE,
+  'B','L','E',' ','M','i','n','i',
+  
+};              
 
 // GAP GATT Attributes
-static uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "Biscuit 2";
+static uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "BLE Mini";
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -211,7 +217,7 @@ static txrxServiceCBs_t biscuit_TXRXServiceCBs =
  *          This is called during initialization and should contain
  *          any application specific initialization (ie. hardware
  *          initialization/setup, table initialization, power up
- *          notificaiton ... ).
+ *          notificaiton ... ).         
  *
  * @param   task_id - the ID assigned by OSAL.  This ID should be
  *                    used to send messages and set timers.
@@ -241,12 +247,11 @@ void Biscuit_Init( uint8 task_id )
     uint16 desired_slave_latency = DEFAULT_DESIRED_SLAVE_LATENCY;
     uint16 desired_conn_timeout = DEFAULT_DESIRED_CONN_TIMEOUT;
 
-    // Set the GAP Role Parameters
+    // Set the GAP Role Parametersuint8 initial_advertising_enable = TRUE;
     GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
     GAPRole_SetParameter( GAPROLE_ADVERT_OFF_TIME, sizeof( uint16 ), &gapRole_AdvertOffTime );
 
     GAPRole_SetParameter( GAPROLE_SCAN_RSP_DATA, sizeof ( scanRspData ), scanRspData );
-    GAPRole_SetParameter( GAPROLE_ADVERT_DATA, sizeof( advertData ), advertData );
 
     GAPRole_SetParameter( GAPROLE_PARAM_UPDATE_ENABLE, sizeof( uint8 ), &enable_update_request );
     GAPRole_SetParameter( GAPROLE_MIN_CONN_INTERVAL, sizeof( uint16 ), &desired_min_interval );
@@ -255,8 +260,46 @@ void Biscuit_Init( uint8 task_id )
     GAPRole_SetParameter( GAPROLE_TIMEOUT_MULTIPLIER, sizeof( uint16 ), &desired_conn_timeout );
   }
 
+  i2c_init();
+  
   // Set the GAP Characteristics
-  GGS_SetParameter( GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, attDeviceName );
+  uint8 nameFlag = eeprom_read(4);
+  uint8 nameLen = eeprom_read(5);
+  if( (nameFlag!=1) || (nameLen>20) )        // First time power up after burning firmware  
+  {
+    GGS_SetParameter( GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, attDeviceName );
+    uint8 len = strlen( (char const *)attDeviceName );
+    TXRX_SetParameter( DEV_NAME_CHAR, len, attDeviceName );
+    
+    eeprom_write(4, 1);
+    eeprom_write(5, len);
+    for(uint8 i=0; i<len; i++)
+    {
+      eeprom_write(i+8, attDeviceName[i]);
+    }
+  }
+  else
+  {    
+    uint8 devName[GAP_DEVICE_NAME_LEN];
+    for(uint8 i=0; i<nameLen; i++)
+    {
+      devName[i] = eeprom_read(i+8);
+    }
+    devName[nameLen] = '\0';
+    GGS_SetParameter( GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, devName );
+    TXRX_SetParameter( DEV_NAME_CHAR, nameLen, devName );
+  } 
+  
+  uint8 LocalName[GAP_DEVICE_NAME_LEN];
+  nameLen = eeprom_read(5);
+  for(uint8 i=0; i<nameLen; i++)
+  {
+    LocalName[i] = eeprom_read(i+8);
+  }
+  advertData[3] = nameLen + 1;  
+  osal_memcpy(&advertData[5], LocalName, nameLen);  
+  osal_memset(&advertData[nameLen+5], 0, 31-5-nameLen);
+  GAPRole_SetParameter( GAPROLE_ADVERT_DATA, sizeof( advertData ), advertData );
 
   // Set advertising interval
   {
@@ -285,7 +328,7 @@ void Biscuit_Init( uint8 task_id )
   // Initialize GATT attributes
   GGS_AddService( GATT_ALL_SERVICES );            // GAP
   GATTServApp_AddService( GATT_ALL_SERVICES );    // GATT attributes
-  DevInfo_AddService();                           // Device Information Service
+  //DevInfo_AddService();                           // Device Information Service
   TXRX_AddService( GATT_ALL_SERVICES );  // Simple GATT Profile
 #if defined FEATURE_OAD
   VOID OADTarget_AddService();                    // OAD Profile
@@ -317,7 +360,7 @@ void Biscuit_Init( uint8 task_id )
   P2 = 0;   // All pins on port 2 to low
 
 #endif // #if defined( CC2540_MINIDK )
-
+  
   // Register callback with TXRXService
   VOID TXRX_RegisterAppCBs( &biscuit_TXRXServiceCBs );
 
@@ -328,8 +371,96 @@ void Biscuit_Init( uint8 task_id )
 
   // Initialize serial interface
   P1SEL = 0x30;
+  P1DIR |= 0x02;
+  P1_1 = 1;
   PERCFG |= 1;
   NPI_InitTransport(dataHandler);
+  
+  uint8 flag, baud;
+  uint8 value;
+  flag = eeprom_read(0);
+  baud = eeprom_read(1);
+  if( flag!=1 || baud>4 )       // First time power up after burning firmware
+  {
+    U0GCR &= 0xE0;      // Default baudrate 57600
+    U0GCR |= 0x0A;
+    U0BAUD = 216;
+    value = 3;
+    
+    eeprom_write(0, 1);
+    eeprom_write(1, 3);
+  }
+  else
+  {
+    switch(baud)
+    {
+      case 0:   //9600
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x08;
+          U0BAUD = 59;
+          value = 0;
+          break;
+        }
+        
+      case 1:   //19200
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x09;
+          U0BAUD = 59;
+          value = 1;
+          break;
+        }
+         
+      case 2:   //38400
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x0A;
+          U0BAUD = 59;
+          value = 2;
+          break;
+        }
+        
+      case 3:   //57600
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x0A;
+          U0BAUD = 216;
+          value = 3;
+          break;
+        }
+        
+      case 4:   //115200
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x0B;
+          U0BAUD = 216;
+          value = 4;
+          break;
+        }
+        
+      default:
+        break;
+    }
+  }
+  TXRX_SetParameter( BAUDRATE_CHAR, 1, &value );
+ 
+  uint8 flag2, txpwr;
+  flag2 = eeprom_read(2);
+  txpwr = eeprom_read(3);
+  if( flag2!=1 || txpwr>3 )       // First time power up after burning firmware
+  {
+    HCI_EXT_SetTxPowerCmd( HCI_EXT_TX_POWER_0_DBM );
+    txpwr = HCI_EXT_TX_POWER_0_DBM;
+    
+    eeprom_write(2, 1);
+    eeprom_write(3, HCI_EXT_TX_POWER_0_DBM);
+  }
+  else
+  {
+    HCI_EXT_SetTxPowerCmd( txpwr );
+  }
+  TXRX_SetParameter( TX_POWER_CHAR, 1, &txpwr );
     
   // Setup a delayed profile startup
   osal_set_event( biscuit_TaskID, SBP_START_DEVICE_EVT );
@@ -520,7 +651,9 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
       break;
 
     case GAPROLE_CONNECTED:
-      {        
+      {     
+        uint8 advertising_enable = FALSE;
+        GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &advertising_enable );
       }
       break;
 
@@ -596,6 +729,89 @@ static void txrxServiceChangeCB( uint8 paramID )
     GAPRole_SendUpdateParam( DEFAULT_DESIRED_MAX_CONN_INTERVAL, DEFAULT_DESIRED_MIN_CONN_INTERVAL,
                             DEFAULT_DESIRED_SLAVE_LATENCY, DEFAULT_DESIRED_CONN_TIMEOUT, GAPROLE_RESEND_PARAM_UPDATE );
   }
+  else if (paramID == BAUDRATE_SET)
+  {
+    uint8 newValue;
+    TXRX_GetParameter(BAUDRATE_CHAR, &len, &newValue);
+    switch(newValue)
+    {
+      case 0:   //9600
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x08;
+          U0BAUD = 59;
+          break;
+        }
+        
+      case 1:   //19200
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x09;
+          U0BAUD = 59;
+          break;
+        }
+         
+      case 2:   //38400
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x0A;
+          U0BAUD = 59;
+          break;
+        }
+        
+      case 3:   //57600
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x0A;
+          U0BAUD = 216;
+          break;
+        }
+        
+      case 4:   //115200
+        {
+          U0GCR &= 0xE0;
+          U0GCR |= 0x0B;
+          U0BAUD = 216;
+          break;
+        }
+        
+      default:
+        break;
+    }
+    eeprom_write(1, newValue);
+  }
+  else if (paramID == DEV_NAME_CHANGED)
+  {
+    uint8 newDevName[GAP_DEVICE_NAME_LEN];
+    TXRX_GetParameter(DEV_NAME_CHAR, &len, newDevName);
+    
+    uint8 devNamePermission = GATT_PERMIT_READ|GATT_PERMIT_WRITE; 
+    GGS_SetParameter( GGS_W_PERMIT_DEVICE_NAME_ATT, sizeof ( uint8 ), &devNamePermission );
+    newDevName[ len ] = '\0';
+    GGS_SetParameter( GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, newDevName );
+    
+    advertData[3] = len + 1;
+    osal_memcpy(&advertData[5], newDevName, len);
+    osal_memset(&advertData[len+5], 0, 31-5-len);
+    GAPRole_SetParameter( GAPROLE_ADVERT_DATA, sizeof( advertData ), advertData );
+    
+    eeprom_write(5, len);
+    for(uint8 i=0; i<len; i++)
+    {
+      eeprom_write(i+8, newDevName[i]);
+    }
+  }
+  else if (paramID == TX_POWER_CHANGED)
+  {
+    uint8 newValue;
+    TXRX_GetParameter(TX_POWER_CHAR, &len, &newValue);
+
+    if(newValue < 4 && newValue >= 0)
+    {
+      HCI_EXT_SetTxPowerCmd( newValue );
+    }
+    eeprom_write(3, newValue);
+  }
 }
 
 /*********************************************************************
@@ -621,9 +837,9 @@ static void dataHandler( uint8 port, uint8 events )
     
     uint8 copy;   
     if(len > (MAX_RX_LEN-rxLen))
-    {
-      rxLen = MAX_RX_LEN;
+    {    
       copy = MAX_RX_LEN - rxLen;
+      rxLen = MAX_RX_LEN;
     }
     else
     {

@@ -21,7 +21,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 
-*/
+*/  
 
 /*********************************************************************
  * INCLUDES
@@ -80,6 +80,18 @@ CONST uint8 BaudrateCharUUID[ATT_UUID_SIZE] =
 CONST uint8 DevNameCharUUID[ATT_UUID_SIZE] =
 { 
   DEV_NAME_CHAR_UUID
+};
+
+// Version Char UUID: 0x0006
+CONST uint8 VersionCharUUID[ATT_UUID_SIZE] =
+{ 
+  VERSION_CHAR_UUID
+};
+
+// Version Char UUID: 0x0007
+CONST uint8 TxPowerCharUUID[ATT_UUID_SIZE] =
+{ 
+  TX_POWER_CHAR_UUID
 };
 
 /*********************************************************************
@@ -154,6 +166,29 @@ static uint8 DevNameLen = 9;
 
 // Characteristic 5 User Description
 static uint8 txrxServiceChar5UserDesp[17] = "Characteristic 5\0";
+
+
+// Characteristic 6 Properties
+static uint8 txrxServiceChar6Props = GATT_PROP_READ;
+
+// Characteristic 6 Value
+static uint8 Version[12] = "Biscuit_2.0";
+
+// Characteristic 6 Length
+static uint8 VersionLen = 11;
+
+// Characteristic 6 User Description
+static uint8 txrxServiceChar6UserDesp[17] = "Characteristic 6\0";
+
+
+// Characteristic 7 Properties
+static uint8 txrxServiceChar7Props = GATT_PROP_WRITE | GATT_PROP_READ;
+
+// Characteristic 7 Value
+static uint8 TxPower = 2;
+
+// Characteristic 7 User Description
+static uint8 txrxServiceChar7UserDesp[17] = "Characteristic 7\0";
 
 /*********************************************************************
  * Profile Attributes - Table
@@ -271,6 +306,54 @@ static gattAttribute_t txrxAttrTbl[] =
         GATT_PERMIT_READ, 
         0, 
         txrxServiceChar5UserDesp 
+      },
+      
+    // Characteristic 6 Declaration
+    { 
+      { ATT_BT_UUID_SIZE, characterUUID },
+      GATT_PERMIT_READ, 
+      0,
+      &txrxServiceChar6Props 
+    },
+
+      // Characteristic Value 6
+      { 
+        { ATT_UUID_SIZE, VersionCharUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        Version 
+      },
+
+      // Characteristic 6 User Description
+      { 
+        { ATT_BT_UUID_SIZE, charUserDescUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        txrxServiceChar6UserDesp 
+      },
+      
+      // Characteristic 7 Declaration
+    { 
+      { ATT_BT_UUID_SIZE, characterUUID },
+      GATT_PERMIT_READ, 
+      0,
+      &txrxServiceChar7Props 
+    },
+
+      // Characteristic Value 7
+      { 
+        { ATT_UUID_SIZE, TxPowerCharUUID },
+        GATT_PERMIT_WRITE | GATT_PERMIT_READ, 
+        0, 
+        &TxPower 
+      },
+
+      // Characteristic 7 User Description
+      { 
+        { ATT_BT_UUID_SIZE, charUserDescUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        txrxServiceChar7UserDesp 
       },
 };
 
@@ -429,6 +512,24 @@ bStatus_t TXRX_SetParameter( uint8 param, uint8 len, void *value )
         ret = bleInvalidRange;
       }
       break;
+      
+    case VERSION_CHAR:
+      {
+        VOID osal_memcpy( Version, value, len );
+        VersionLen = len;
+      }
+      break;
+      
+    case TX_POWER_CHAR:
+      if ( len == 1 ) 
+      {
+        VOID osal_memcpy( &TxPower, value, len );
+      }
+      else
+      {
+        ret = bleInvalidRange;
+      }
+      break;
 
     default:
       ret = INVALIDPARAMETER;
@@ -474,6 +575,15 @@ bStatus_t TXRX_GetParameter( uint8 param, uint8 *len, void *value )
     case DEV_NAME_CHAR:
       *len = DevNameLen;
       VOID osal_memcpy(value, DevName, DevNameLen);
+      break;
+      
+    case VERSION_CHAR:
+      *len = VersionLen;
+      VOID osal_memcpy(value, Version, VersionLen);
+      break;
+      
+    case TX_POWER_CHAR:
+      VOID osal_memcpy(value, &TxPower, 1);
       break;
       
     default:
@@ -577,6 +687,51 @@ static uint8 txrx_ReadAttrCB( uint16 connHandle, gattAttribute_t *pAttr,
     {
       *pLen = DevNameLen;
       VOID osal_memcpy( pValue, pAttr->pValue, DevNameLen );     
+    }
+    else if ( osal_memcmp(pAttr->type.uuid, VersionCharUUID, ATT_UUID_SIZE) )
+    {
+      *pLen = VersionLen;
+      VOID osal_memcpy( pValue, pAttr->pValue, VersionLen );     
+    }
+    else if ( osal_memcmp(pAttr->type.uuid, TxPowerCharUUID, ATT_UUID_SIZE) )
+    {
+      switch(TxPower)
+      {
+        case 0:   //-23dbm
+        {
+          *pLen = 7;
+          uint8 *str = "-23 dBm";
+          VOID osal_memcpy( pValue, str, 7 );
+          break;
+        }
+        
+        case 1:   //-6dbm
+        {
+          *pLen = 6;
+          uint8 *str = "-6 dBm";
+          VOID osal_memcpy( pValue, str, 6 );
+          break;
+        }
+         
+        case 2:   //0dbm
+        {
+          *pLen = 5;
+          uint8 *str = "0 dBm";
+          VOID osal_memcpy( pValue, str, 5 );
+          break;
+        }
+        
+        case 3:   //+4dbm
+        {
+          *pLen = 6;
+          uint8 *str = "+4 dBm";
+          VOID osal_memcpy( pValue, str, 6 );
+          break;
+        }
+        
+        default:
+          break;
+      }     
     }
     else
     {
@@ -722,6 +877,35 @@ static bStatus_t txrx_WriteAttrCB( uint16 connHandle, gattAttribute_t *pAttr,
         DevNameLen = len;
         
         notifyApp = DEV_NAME_CHANGED;           
+      }
+    }
+    else if ( osal_memcmp(pAttr->type.uuid, TxPowerCharUUID, ATT_UUID_SIZE) )
+    {
+      //Validate the value
+      // Make sure it's not a blob oper
+      if ( offset == 0 )
+      {
+        if ( len != 1 )
+        {
+          status = ATT_ERR_INVALID_VALUE_SIZE;
+        }
+      }
+      else
+      {
+        status = ATT_ERR_ATTR_NOT_LONG;
+      }
+      if(*pValue > 3)
+      {
+        status = ATT_ERR_INVALID_VALUE;
+      }
+        
+      //Write the value
+      if ( status == SUCCESS )
+      {                
+        uint8 *pCurValue = (uint8 *)pAttr->pValue;
+        osal_memcpy(pCurValue, pValue, len);
+        
+        notifyApp = TX_POWER_CHANGED;           
       }
     }
     else
