@@ -41,10 +41,19 @@ How to Compile
 
 1. Make sure you know how to do before trying to compile and load the firmware because incorrect configuration can cause the pre-loaded bootloader fails to function.
 
-2. A detailed guideline will be provided soon.<br/>
-   -> See current\readme.txt for details
+2. For details, see current\readme.txt or wiki,
+
+  https://github.com/RedBearLab/Biscuit/wiki
 
 
+Q&A
+===
+
+1. How to change the baudrate of the UART?
+
+   > The charateristic, UUID: 0x713D0004-503E-4C75-BA94-3148F18D941E can be used for changing the baudrate. You can use LightBlue or BLExplr Apps available on iOS or B-BLE on Android to change it. See our wiki for details, https://github.com/RedBearLab/Biscuit/wiki
+
+   
 More Information
 ================
 
