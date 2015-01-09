@@ -51,9 +51,13 @@ Q&A
 
 1. How to change the baudrate of the UART?
 
-   > The charateristic, UUID: 0x713D0004-503E-4C75-BA94-3148F18D941E can be used for changing the baudrate. You can use LightBlue or BLExplr Apps available on iOS or B-BLE on Android to change it. See our wiki for details, https://github.com/RedBearLab/Biscuit/wiki
+  > The charateristic, UUID: 0x713D0004-503E-4C75-BA94-3148F18D941E can be used for changing the baudrate. You can use LightBlue or BLExplr Apps available on iOS or B-BLE on Android to change it.
 
-   
+  > To change the baudrate, write a byte 0x00 (9600bps), 0x01 (19200bps), 0x02 (38400bps), 0x03 (57600bps) or 0x04 (115200bps) to the characteristic.
+
+  > See our wiki for details, https://github.com/RedBearLab/Biscuit/wiki
+
+
 More Information
 ================
 
